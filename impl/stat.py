@@ -16,6 +16,8 @@ limitations under the License.
 import logging
 
 from core.core import CoreApp
+from tools import console
+from tools import vk_api
 
 LOG = logging.getLogger(__name__)
 
@@ -23,3 +25,17 @@ LOG = logging.getLogger(__name__)
 class Stat(CoreApp):
     def start(self):
         super().start()
+
+        try:
+            self.do_work()
+        except KeyboardInterrupt:
+            LOG.info("Stat module is finished.")
+
+    def do_work(self):
+        while 1:
+            public_name = console.read_input("Enter of public name: ")
+            info = vk_api.fetch_public_info(self.vk_user, public_name)
+            self.print_info(info)
+
+    def print_info(self, info):
+        pass

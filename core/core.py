@@ -101,12 +101,14 @@ class CoreApp(object):
     def __init__(self, context):
         self.context = context
         self.db_connection = db.DBConnection()
-        self._vk_user = self.check_user_in_db()
-        if not self._vk_user:
+        user_login = self.context.config.get_value("user_login", str)
+        self.vk_user = self.check_user_in_db(user_login)
+        if not self.vk_user:
+            LOG.info("There is no users login DB with id %s" % user_login)
             self.refresh_user()
 
     def refresh_user(self):
-        self._vk_user = self.fetch_new_user()
+        self.vk_user = self.fetch_new_user()
 
     def fetch_new_user(self):
         LOG.info("Fetching user ")
@@ -124,20 +126,13 @@ class CoreApp(object):
                  "access_token=%s" % (login, user_id, token))
         return db.User(id=user_id, login=login, password=password)
 
-    def get_user(self, fetch_if_not_exist):
-        if not self._vk_user and fetch_if_not_exist:
-            self.refresh_user()
-
-        return self._vk_user
-
     def start(self):
         LOG.info(
             "Running with command -> %s" % self.context.user_arguments.command)
 
-    def check_user_in_db(self):
+    def check_user_in_db(self, user_login):
         with self.db_connection.query(db.User) as query:
-            user_login = self.context.config.get_value("user_login", str)
             try:
                 return query.filter_by(login=user_login).one()
             except NoResultFound:
-                LOG.info("There is no users login DB with id %s" % user_login)
+                return None

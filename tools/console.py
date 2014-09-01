@@ -13,23 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import urllib.parse
 
-VK_API_URL = "https://api.vk.com/method/"
-
-
-class CaptchaRequiredException(BaseException):
-    pass
-
-
-class TokenExpiredException(BaseException):
-    pass
-
-
-class ApiRequest(object):
-    def __init__(self, context, method, token_expired=True,
-                 captcha_required=True, **kwargs):
-        self.method = method
-        self.handle_token_expired = token_expired
-        self.handle_captcha_required = captcha_required
-        self.arguments = kwargs
+def read_input(out_msg):
+    return input(out_msg)
