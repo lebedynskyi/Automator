@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import json
+
 from tools import http_utils
 
 VK_API_HEADERS = {"Accept-Encoding": "utf-8",
@@ -47,6 +49,11 @@ class ApiRequest(object):
         return self._do_request(url_builder, handle_token, handle_captcha)
 
     def _do_request(self, url_builder, handle_token, handle_captcha):
-        url_builder.add_arguments({"access_token": self.vk_user})
-        http_response = http_utils.do_get(url_builder.build(), VK_API_HEADERS)
-        print(http_response)
+        url_builder.add_arguments({"access_token": self.vk_user.last_token})
+        b_response = http_utils.do_get(url_builder.build(), VK_API_HEADERS)
+        text_response = b_response.decode(encoding='UTF-8')
+        obj = json.loads(text_response)
+
+
+def community_search():
+    pass

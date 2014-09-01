@@ -34,14 +34,22 @@ class Stat(CoreApp):
     def do_work(self):
         while 1:
             user_input = console.read_input(
-                'Enter of public name (q for exit): ')
+                'Enter of public name (q for exit): ').strip()
             if user_input.lower() == 'q':
                 raise KeyboardInterrupt()
 
-            vk_request = vk_api.ApiRequest(self.context, self.vk_user)
-            info = vk_request.do_request(vk_api.METHOD_COMMUNITY_SEARCH,
-                                         True, True, q=user_input)
-            self.print_info(info)
+            if len(user_input) == 0:
+                print("Wrong query, try again")
+                continue
+
+            try:
+                vk_request = vk_api.ApiRequest(self.context, self.vk_user)
+                info = vk_request.do_request(vk_api.METHOD_COMMUNITY_SEARCH,
+                                             True, True, q=user_input)
+                self.print_info(info)
+            except BaseException as e:
+                print("Error is happened")
+                LOG.exception(e)
 
     def print_info(self, info):
         pass

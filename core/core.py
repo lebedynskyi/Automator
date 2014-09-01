@@ -110,6 +110,7 @@ class CoreApp(object):
     def refresh_user(self):
         self.vk_user = self.fetch_new_user()
 
+
     def fetch_new_user(self):
         LOG.info("Fetching user ")
         login = self.context.config.get_value("user_login")
@@ -124,7 +125,8 @@ class CoreApp(object):
                  "user_login=%s\n\t"
                  "user_id=%s\n\t"
                  "access_token=%s" % (login, user_id, token))
-        return db.User(id=user_id, login=login, password=password)
+        return db.User(id=user_id, login=login, password=password,
+                       last_token=token)
 
     def start(self):
         LOG.info(

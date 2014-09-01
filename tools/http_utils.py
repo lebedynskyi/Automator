@@ -67,7 +67,7 @@ class UrlBuilder(object):
 
 
 def do_get(url, headers={}):
-    request = urllib.request.Request(url, headers=headers, method="get")
+    request = urllib.request.Request(url, headers=headers, method="GET")
     response = urllib.request.urlopen(request)
     content = response.read()
     return content
