@@ -133,8 +133,9 @@ class CoreApp(object):
             "Running with command -> %s" % self.context.user_arguments.command)
 
     def check_user_in_db(self, user_login):
-        with self.db_connection.query(db.User) as query:
+        with self.db_connection.open_session() as sess:
             try:
+                query = sess.query(db.User)
                 return query.filter_by(login=user_login).one()
             except NoResultFound:
                 return None

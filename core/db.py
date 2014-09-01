@@ -45,10 +45,10 @@ class DBConnection(object):
         self.Session = sessionmaker(bind=self.engine)
 
     @contextlib.contextmanager
-    def query(self, model, *args, **kwargs):
-        session = kwargs.get('session') or self.Session()
+    def open_session(self):
+        session = self.Session()
         try:
-            yield session.query(model, *args)
+            yield session
         finally:
             session.commit()
             session.close()

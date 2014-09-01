@@ -53,6 +53,7 @@ class ApiRequest(object):
         b_response = http_utils.do_get(url_builder.build(), VK_API_HEADERS)
         text_response = b_response.decode(encoding='UTF-8')
         obj = json.loads(text_response)
+        return obj
 
 
 def community_search():

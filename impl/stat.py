@@ -52,4 +52,4 @@ class Stat(CoreApp):
                 LOG.exception(e)
 
     def print_info(self, info):
-        pass
+        print(info)
