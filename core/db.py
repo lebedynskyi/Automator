@@ -30,10 +30,11 @@ class User(orm_base):
     id = Column(Integer, primary_key=True)
     login = Column(String)
     password = Column(String)
+    last_token = Column(String)
 
     def __repr__(self):
-        return "<User(id='%s', login='%s', password='%s', name='%s')>" % (
-            self.name, self.login, self.password, self.name)
+        return "<User(id='%s', login='%s', password='%s')>" % (
+            self.id, self.login, self.password)
 
 
 class DBConnection(object):

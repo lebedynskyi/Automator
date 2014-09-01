@@ -14,6 +14,7 @@ limitations under the License.
 """
 
 import urllib.parse
+import urllib.request
 
 
 class UrlBuilder(object):
@@ -55,13 +56,18 @@ class UrlBuilder(object):
             url_pattern += "/{path}"
         if self.arguments:
             url_pattern += "?{args}"
-        return url_pattern.format(scheme=self.url_scheme,
-                                  base=self.base,
-                                  path=self.gen_path(),
-                                  args=self.gen_args())
+        return url_pattern.format(scheme=self.url_scheme, base=self.base,
+                                  path=self.gen_path(), args=self.gen_args())
 
     def gen_path(self):
         return "/".join(self.path_parts)
 
     def gen_args(self):
         return urllib.parse.urlencode(self.arguments)
+
+
+def do_get(url, headers={}):
+    request = urllib.request.Request(url, headers=headers, method="get")
+    response = urllib.request.urlopen(request)
+    content = response.read()
+    return content

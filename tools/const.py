@@ -15,12 +15,11 @@ import os
 
 
 class Global(object):
-    NAME = ".vk_automator"
+    NAME = ".automator"
     DATA_PATH = os.path.join(os.path.expanduser("~/"), NAME)
 
     DB_NAME = "automator"
-    DB_CONNECTION_URL = "sqlite:///%s:" % os.path.join(DATA_PATH,
-                                                           DB_NAME)
+    DB_CONNECTION_URL = "sqlite:///%s:" % os.path.join(DATA_PATH, DB_NAME)
 
     CONFIG_NAME = "configs.ini"
     CONFIGS_PATH = os.path.join(DATA_PATH, CONFIG_NAME)

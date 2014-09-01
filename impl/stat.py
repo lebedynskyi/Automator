@@ -33,8 +33,14 @@ class Stat(CoreApp):
 
     def do_work(self):
         while 1:
-            public_name = console.read_input("Enter of public name: ")
-            info = vk_api.fetch_public_info(self.vk_user, public_name)
+            user_input = console.read_input(
+                'Enter of public name (q for exit): ')
+            if user_input.lower() == 'q':
+                raise KeyboardInterrupt()
+
+            vk_request = vk_api.ApiRequest(self.context, self.vk_user)
+            info = vk_request.do_request(vk_api.METHOD_COMMUNITY_SEARCH,
+                                         True, True, q=user_input)
             self.print_info(info)
 
     def print_info(self, info):
