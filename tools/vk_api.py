@@ -22,7 +22,8 @@ VK_API_HEADERS = {"Accept-Encoding": "utf-8",
                   "User-Agent": "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy "
                                 "Nexus Build/IMM76B) AppleWebKit/535.19 "
                                 "(KHTML, like Gecko) Chrome/18.0.1025.133 "
-                                "Mobile Safari/535.19"}
+                                "Mobile Safari/535.19",
+                  "Content-Type', 'application/x-www-form-urlencoded"}
 
 
 VK_API_URL = "https://api.vk.com/method/"
