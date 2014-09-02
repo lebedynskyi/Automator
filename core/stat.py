@@ -45,7 +45,9 @@ class Stat(CoreApp):
             try:
                 vk_request = vk_api.ApiRequest(self.context, self.vk_user)
                 info = vk_request.do_request(vk_api.METHOD_COMMUNITY_SEARCH,
-                                             True, True, q=user_input)
+                                             True, True, q=user_input,
+                                             type="group",
+                                             fields="members_count")
                 self.print_info(info)
             except BaseException as e:
                 print("Error is happened")

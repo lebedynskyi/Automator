@@ -29,6 +29,7 @@ class Context(object):
     def __init__(self, config, user_arguments):
         self.user_arguments = user_arguments
         self.config = config
+        self.db_connection = db.DBConnection()
 
 
 class ConfigHolder(object):
@@ -80,7 +81,7 @@ class ConfigHolder(object):
             self.cached_configs[cached_key] = converted_value
             return converted_value if converted_value else default
         except:
-            LOG.info("cannot read config %s, default = %s" % (key, default))
+            LOG.warning("cannot read config %s, default = %s" % (key, default))
             return default
 
     def _prepare_configs(self):
@@ -100,19 +101,21 @@ class ConfigHolder(object):
 class CoreApp(object):
     def __init__(self, context):
         self.context = context
-        self.db_connection = db.DBConnection()
+
         user_login = self.context.config.get_value("user_login", str)
-        self.vk_user = self.check_user_in_db(user_login)
-        if not self.vk_user:
-            LOG.info("There is no users login DB with id %s" % user_login)
-            self.refresh_user()
 
-    def refresh_user(self):
-        self.vk_user = self.fetch_new_user()
-
+        try:
+            self.vk_user = self.context.db_connection.session.\
+                query(db.User).filter_by(login=user_login).one()
+            LOG.info("Using saved user ->> %s" % self.vk_user)
+        except NoResultFound:
+            LOG.info("There is no users in DB with login %s" % user_login)
+            self.vk_user = self.fetch_new_user()
+            self.context.db_connection.session.add(self.vk_user)
+            self.context.db_connection.session.commit()
 
     def fetch_new_user(self):
-        LOG.info("Fetching user ")
+        LOG.info("Fetching new user ")
         login = self.context.config.get_value("user_login")
         password = self.context.config.get_value("user_pass")
 
@@ -121,7 +124,7 @@ class CoreApp(object):
 
         auth = vk_auth.Authenticator(login, password, app_id, auth_scope)
         token, user_id = auth.do_auth()
-        LOG.info("Successfully authorized user\n\t"
+        LOG.info("Successfully fetched new user\n\t"
                  "user_login=%s\n\t"
                  "user_id=%s\n\t"
                  "access_token=%s" % (login, user_id, token))
@@ -129,13 +132,4 @@ class CoreApp(object):
                        last_token=token)
 
     def start(self):
-        LOG.info(
-            "Running with command -> %s" % self.context.user_arguments.command)
-
-    def check_user_in_db(self, user_login):
-        with self.db_connection.open_session() as sess:
-            try:
-                query = sess.query(db.User)
-                return query.filter_by(login=user_login).one()
-            except NoResultFound:
-                return None
+        pass

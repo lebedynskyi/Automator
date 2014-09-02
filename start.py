@@ -16,11 +16,10 @@ limitations under the License.
 import argparse
 import logging
 
-from core import core
+from core import core, stat
 from core.core import ConfigHolder
 from tools import check_utils
 from tools import const
-from impl import stat
 
 
 logging.basicConfig(level=logging.DEBUG)

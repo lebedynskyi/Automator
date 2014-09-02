@@ -11,6 +11,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 import os
 
 
@@ -19,7 +20,7 @@ class Global(object):
     DATA_PATH = os.path.join(os.path.expanduser("~/"), NAME)
 
     DB_NAME = "automator"
-    DB_CONNECTION_URL = "sqlite:///%s:" % os.path.join(DATA_PATH, DB_NAME)
+    DB_URL = "sqlite:///%s:" % os.path.join(DATA_PATH, DB_NAME)
 
     CONFIG_NAME = "configs.ini"
     CONFIGS_PATH = os.path.join(DATA_PATH, CONFIG_NAME)

@@ -13,8 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import contextlib
-
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -39,16 +37,7 @@ class User(orm_base):
 
 class DBConnection(object):
     def __init__(self):
-        self.engine = create_engine(const.Global.DB_CONNECTION_URL, echo=True)
-
-        orm_base.metadata.create_all(self.engine)
-        self.Session = sessionmaker(bind=self.engine)
-
-    @contextlib.contextmanager
-    def open_session(self):
-        session = self.Session()
-        try:
-            yield session
-        finally:
-            session.commit()
-            session.close()
+        self._engine = create_engine(const.Global.DB_URL, echo=False)
+        orm_base.metadata.create_all(self._engine)
+        self._Session = sessionmaker(bind=self._engine)
+        self.session = self._Session()
