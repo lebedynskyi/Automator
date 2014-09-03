@@ -29,7 +29,7 @@ class Context(object):
     def __init__(self, config, user_arguments):
         self.user_arguments = user_arguments
         self.config = config
-        self.db_connection = db.DBConnection()
+        self.db_facade = db.DBFacade()
 
 
 class ConfigHolder(object):
@@ -105,14 +105,14 @@ class CoreApp(object):
         user_login = self.context.config.get_value("user_login", str)
 
         try:
-            self.vk_user = self.context.db_connection.session.\
+            self.vk_user = self.context.db_facade.session.\
                 query(db.User).filter_by(login=user_login).one()
             LOG.info("Using saved user ->> %s" % self.vk_user)
         except NoResultFound:
             LOG.info("There is no users in DB with login %s" % user_login)
             self.vk_user = self.fetch_new_user()
-            self.context.db_connection.session.add(self.vk_user)
-            self.context.db_connection.session.commit()
+            self.context.db_facade.session.add(self.vk_user)
+            self.context.db_facade.session.commit()
 
     def fetch_new_user(self):
         LOG.info("Fetching new user ")

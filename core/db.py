@@ -35,7 +35,7 @@ class User(orm_base):
             self.id, self.login, self.password)
 
 
-class DBConnection(object):
+class DBFacade(object):
     def __init__(self):
         self._engine = create_engine(const.Global.DB_URL, echo=False)
         orm_base.metadata.create_all(self._engine)
