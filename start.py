@@ -16,8 +16,8 @@ limitations under the License.
 import argparse
 import logging
 
-from core import core, stat
-from core.core import ConfigHolder
+from app import core, stat
+from app.core import ConfigHolder
 from tools import check_utils
 from tools import const
 
@@ -26,13 +26,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def process_arguments():
-    parser = argparse.ArgumentParser(description="Vk Automator")
+    parser = argparse.ArgumentParser(description="Automator")
     parser.add_argument("-c", "--command", dest="command", required=True,
                         help="Determines what app should do."
                              "Should be one of %s, %s, %s" % (
-                             const.AppType.RUN_FETCHER,
-                             const.AppType.RUN_POSTER,
-                             const.AppType.RUN_STAT))
+                            const.AppType.RUN_FETCHER,
+                            const.AppType.RUN_POSTER,
+                            const.AppType.RUN_STAT))
     return parser.parse_args()
 
 
@@ -53,12 +53,11 @@ def process_command(context):
 
 
 if __name__ == "__main__":
-    user_arguments = process_arguments()
-
     check_utils.check_app_files()
     configurations = ConfigHolder(const.Global.CONFIGS_PATH)
-
     check_utils.check_config(configurations)
+
+    user_arguments = process_arguments()
     context = core.Context(configurations, user_arguments)
 
     process_command(context)

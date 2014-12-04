@@ -1,0 +1,12 @@
+var groups = API.groups.search({"q":query,"count":250,"fields":"members_count", "type":"group"}).items;
+
+var i = 0, answer = [], length = groups.length;
+while (i <= length){
+    var group = groups[i];
+    if (parseInt(group.members_count) >= 30000){
+        answer = answer + [group];
+    }
+    i = i + 1;
+}
+
+return answer;

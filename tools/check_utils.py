@@ -36,14 +36,14 @@ def check_app_files():
         os.makedirs(app_data_path)
 
     if not os.path.exists(const.Global.CONFIGS_PATH):
-        local_config = os.path.join("files", const.Global.CONFIG_NAME)
+        local_config = os.path.join("files", const.Global.CONFIG_FILE_NAME)
         dist_config = const.Global.CONFIGS_PATH
         LOG.debug("Copying file from %s to %s" % (local_config, dist_config))
 
         copyfile(local_config, dist_config)
 
     if not os.path.exists(const.Global.LOGGER_PATH):
-        local_app_logger = os.path.join("files", const.Global.LOGGER_NAME)
+        local_app_logger = os.path.join("files", const.Global.LOGGER_FILE_NAME)
         dist_app_logger = const.Global.LOGGER_PATH
         LOG.debug("Copying file from %s to %s" % (local_app_logger,
                                                   dist_app_logger))

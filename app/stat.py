@@ -17,7 +17,7 @@ import logging
 
 from prettytable import PrettyTable
 
-from core.core import CoreApp
+from app.core import CoreApp
 from tools import console
 from tools import vk_api
 
@@ -25,7 +25,26 @@ from tools import vk_api
 LOG = logging.getLogger(__name__)
 
 
+def print_info(resp):
+    table = PrettyTable(["Members", "Name", "url"])
+    table.align["Members"] = "l"
+    table.align["Name"] = "l"
+    table.align["url"] = "l"
+    print("%s pages were found" % len(resp))
+    for group in resp:
+        count = group["members_count"] if "members_count" in group else 0
+        name = group["name"][:50]
+        url = group["screen_name"]
+        table.add_row([count, name, url])
+
+    print(table)
+
+
 class Stat(CoreApp):
+    def __init__(self, context):
+        super().__init__(context)
+        self.vk_api = vk_api.ApiRequest(self.context, self.vk_user)
+
     def start(self):
         super().start()
 
@@ -37,7 +56,7 @@ class Stat(CoreApp):
     def do_work(self):
         while 1:
             query = console.read_input(
-                'Enter of public name (q for exit): ').strip()
+                'Enter a name of public (q for exit): ').strip()
             if query.lower() == 'q':
                 raise KeyboardInterrupt()
 
@@ -46,32 +65,19 @@ class Stat(CoreApp):
                 continue
 
             try:
-                vk_request = vk_api.ApiRequest(self.context, self.vk_user)
-                resp = vk_request.do_request("execute.searchGroups", q=query)
+                resp = self.vk_api.do_request("execute.searchGroups", q=query)
 
                 if not resp:
                     print("Nothing to show")
                     continue
 
+                resp = sorted(resp, key=lambda k: k['members_count'])
+
                 try:
-                    self.print_info(resp)
+                    print_info(resp)
                 except:
-                    LOG.warning("Cannot print table")
+                    LOG.warning("Cannot print table. Response:")
                     print(resp)
             except BaseException as e:
                 print("Error is happened")
                 LOG.exception(e)
-
-    def print_info(self, resp):
-        table = PrettyTable(["Members", "Name", "url"])
-        table.align["Members"] = "l"
-        table.align["Name"] = "l"
-        table.align["url"] = "l"
-        print("%s groups was found" % len(resp))
-        for group in resp:
-            count = group["members_count"] if "members_count" in group else 0
-            name = group["name"][:50]
-            url = group["screen_name"]
-            table.add_row([count, name, url])
-
-        print(table)

@@ -22,14 +22,14 @@ class Global(object):
     DB_NAME = "automator"
     DB_URL = "sqlite:///%s:" % os.path.join(DATA_PATH, DB_NAME)
 
-    CONFIG_NAME = "configs.ini"
-    CONFIGS_PATH = os.path.join(DATA_PATH, CONFIG_NAME)
+    CONFIG_FILE_NAME = "configs.ini"
+    CONFIGS_PATH = os.path.join(DATA_PATH, CONFIG_FILE_NAME)
 
-    LOGGER_NAME = "logger.ini"
-    LOGGER_PATH = os.path.join(DATA_PATH, LOGGER_NAME)
+    LOGGER_FILE_NAME = "logger.ini"
+    LOGGER_PATH = os.path.join(DATA_PATH, LOGGER_FILE_NAME)
 
 
 class AppType(object):
-    RUN_FETCHER = "fetcher"
+    RUN_FETCHER = "fetch"
     RUN_STAT = "stat"
-    RUN_POSTER = "poster"
+    RUN_POSTER = "post"

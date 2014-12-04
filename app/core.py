@@ -18,7 +18,7 @@ import glob
 import logging
 import os
 
-from core import db
+import app.db
 from sqlalchemy.orm.exc import NoResultFound
 from tools import vk_auth
 
@@ -29,7 +29,7 @@ class Context(object):
     def __init__(self, config, user_arguments):
         self.user_arguments = user_arguments
         self.config = config
-        self.db_facade = db.DBFacade()
+        self.db_facade = app.db.DBFacade()
 
 
 class ConfigHolder(object):
@@ -106,7 +106,7 @@ class CoreApp(object):
 
         try:
             self.vk_user = self.context.db_facade.session.\
-                query(db.User).filter_by(login=user_login).one()
+                query(app.db.User).filter_by(login=user_login).one()
             LOG.info("Using saved user ->> %s" % self.vk_user)
         except NoResultFound:
             LOG.info("There is no users in DB with login %s" % user_login)
@@ -128,7 +128,7 @@ class CoreApp(object):
                  "user_login=%s\n\t"
                  "user_id=%s\n\t"
                  "access_token=%s" % (login, user_id, token))
-        return db.User(id=user_id, login=login, password=password,
+        return app.db.User(id=user_id, login=login, password=password,
                        last_token=token)
 
     def start(self):
