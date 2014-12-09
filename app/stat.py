@@ -18,11 +18,10 @@ import logging
 from prettytable import PrettyTable
 
 from app.core import CoreApp
-from tools import console
 from tools import vk_api
 
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger()
 
 
 def print_info(resp):
@@ -43,20 +42,25 @@ def print_info(resp):
 class Stat(CoreApp):
     def __init__(self, context):
         super().__init__(context)
+        self.vk_api = None
+
+    def do_work(self):
+        self.vk_user = self.get_user_from_db()
+
+        if not self.vk_user:
+            self.vk_user = self.fetch_new_user()
+            self.save_user(self.vk_user)
+
         self.vk_api = vk_api.ApiRequest(self.context, self.vk_user)
 
-    def start(self):
-        super().start()
-
         try:
-            self.do_work()
+            self.manage_stat()
         except KeyboardInterrupt:
             LOG.info("Stat module is finished.")
 
-    def do_work(self):
+    def manage_stat(self):
         while 1:
-            query = console.read_input(
-                'Enter a name of public (q for exit): ').strip()
+            query = input('Enter a name of public (q for exit): ').strip()
             if query.lower() == 'q':
                 raise KeyboardInterrupt()
 

@@ -22,7 +22,7 @@ import app.db
 from sqlalchemy.orm.exc import NoResultFound
 from tools import vk_auth
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger()
 
 
 class Context(object):
@@ -102,17 +102,15 @@ class CoreApp(object):
     def __init__(self, context):
         self.context = context
 
+    def get_user_from_db(self):
         user_login = self.context.config.get_value("user_login", str)
-
         try:
-            self.vk_user = self.context.db_facade.session.\
+            vk_user = self.context.db_facade.session.\
                 query(app.db.User).filter_by(login=user_login).one()
-            LOG.info("Using saved user ->> %s" % self.vk_user)
+            LOG.info("Using saved user ->> %s" % vk_user)
+            return vk_user
         except NoResultFound:
             LOG.info("There is no users in DB with login %s" % user_login)
-            self.vk_user = self.fetch_new_user()
-            self.context.db_facade.session.add(self.vk_user)
-            self.context.db_facade.session.commit()
 
     def fetch_new_user(self):
         LOG.info("Fetching new user ")
@@ -131,5 +129,9 @@ class CoreApp(object):
         return app.db.User(id=user_id, login=login, password=password,
                        last_token=token)
 
-    def start(self):
+    def save_user(self, vk_user):
+        self.context.db_facade.session.add(vk_user)
+        self.context.db_facade.session.commit()
+
+    def do_work(self):
         pass

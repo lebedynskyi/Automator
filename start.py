@@ -15,6 +15,7 @@ limitations under the License.
 
 import argparse
 import logging
+import logging.config
 
 from app import core, stat
 from app.core import ConfigHolder
@@ -22,7 +23,7 @@ from tools import check_utils
 from tools import const
 
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.NOTSET)
 
 
 def process_arguments():
@@ -49,15 +50,20 @@ def process_command(context):
     if app is None:
         raise ValueError("Unknown command %s" % command)
     else:
-        app.start()
+        app.do_work()
 
 
-if __name__ == "__main__":
+def do_start():
     check_utils.check_app_files()
     configurations = ConfigHolder(const.Global.CONFIGS_PATH)
     check_utils.check_config(configurations)
 
+    logging.config.fileConfig(const.Global.LOGGER_PATH)
+
     user_arguments = process_arguments()
     context = core.Context(configurations, user_arguments)
-
     process_command(context)
+
+
+if __name__ == "__main__":
+    do_start()

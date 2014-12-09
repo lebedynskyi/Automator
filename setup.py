@@ -18,5 +18,6 @@ setup(
     description="Application helps use vk.com and automate public creation",
     license="Apache 2",
     url="https://github.com/VLebedinskyi/automator",
-    setup_requires=read_lines("requirements.txt")
+    setup_requires=read_lines("requirements.txt"),
+    # entry_points={'console_scripts': ['ato = automator.start:do_start']}
 )
